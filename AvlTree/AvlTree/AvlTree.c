@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <Windows.h>
+#include <stdio.h>
 
 /**
  * @brief Maximum number of array for test cases
@@ -7,29 +7,28 @@
  */
 #define MAX_AVL_TEST_NODES 200
 
- /**
-  * @brief AVL Node structure
-  *
-  */
-typedef struct _OPTIMIZATION_AVL_NODE {
+/**
+ * @brief AVL Node structure
+ *
+ */
+typedef struct _OPTIMIZATION_AVL_NODE
+{
     UINT64 Data;
     UINT32 Left, Right;
     UINT32 Height;
-} OPTIMIZATION_AVL_NODE, * POPTIMIZATION_AVL_NODE;
-
+} OPTIMIZATION_AVL_NODE, *POPTIMIZATION_AVL_NODE;
 
 /**
  * @brief AVL context
  *
  */
-typedef struct _OPTIMIZATION_AVL_CONTEXT {
-
+typedef struct _OPTIMIZATION_AVL_CONTEXT
+{
     OPTIMIZATION_AVL_NODE Tree[MAX_AVL_TEST_NODES];
-    UINT32 Root; // Use a value that is not a valid index
-    UINT32 FreeIndex;
+    UINT32                Root; // Use a value that is not a valid index
+    UINT32                FreeIndex;
 
-} OPTIMIZATION_AVL_CONTEXT, * POPTIMIZATION_AVL_CONTEXT;
-
+} OPTIMIZATION_AVL_CONTEXT, *POPTIMIZATION_AVL_CONTEXT;
 
 /**
  * @brief Initialize an empty AVL tree
@@ -37,8 +36,10 @@ typedef struct _OPTIMIZATION_AVL_CONTEXT {
  *
  * @return VOID
  */
-VOID AvlTreeInit(OPTIMIZATION_AVL_CONTEXT* AvlContext) {
-    AvlContext->Root = MAX_AVL_TEST_NODES;
+VOID
+AvlTreeInit(OPTIMIZATION_AVL_CONTEXT * AvlContext)
+{
+    AvlContext->Root      = MAX_AVL_TEST_NODES;
     AvlContext->FreeIndex = 0;
 }
 
@@ -49,8 +50,11 @@ VOID AvlTreeInit(OPTIMIZATION_AVL_CONTEXT* AvlContext) {
  *
  * @return UINT32
  */
-UINT32 AvlTreeGetHeight(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
-    if (Index == MAX_AVL_TEST_NODES) {
+UINT32
+AvlTreeGetHeight(OPTIMIZATION_AVL_CONTEXT * AvlContext, UINT32 Index)
+{
+    if (Index == MAX_AVL_TEST_NODES)
+    {
         return 0;
     }
     return AvlContext->Tree[Index].Height;
@@ -63,10 +67,14 @@ UINT32 AvlTreeGetHeight(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
  *
  * @return VOID
  */
-VOID AvlTreeUpdateHeight(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
-    AvlContext->Tree[Index].Height = 1 + ((AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Left) >
-        AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Right)) ?
-        AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Left) : AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Right));
+VOID
+AvlTreeUpdateHeight(OPTIMIZATION_AVL_CONTEXT * AvlContext, UINT32 Index)
+{
+    AvlContext->Tree[Index].Height =
+        1 + ((AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Left) >
+              AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Right))
+                 ? AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Left)
+                 : AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Right));
 }
 
 /**
@@ -76,9 +84,11 @@ VOID AvlTreeUpdateHeight(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
  *
  * @return UINT32
  */
-UINT32 AvlTreeRotateLeft(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
-    UINT32 NewRoot = AvlContext->Tree[Index].Right;
-    AvlContext->Tree[Index].Right = AvlContext->Tree[NewRoot].Left;
+UINT32
+AvlTreeRotateLeft(OPTIMIZATION_AVL_CONTEXT * AvlContext, UINT32 Index)
+{
+    UINT32 NewRoot                 = AvlContext->Tree[Index].Right;
+    AvlContext->Tree[Index].Right  = AvlContext->Tree[NewRoot].Left;
     AvlContext->Tree[NewRoot].Left = Index;
     AvlTreeUpdateHeight(AvlContext, Index);
     AvlTreeUpdateHeight(AvlContext, NewRoot);
@@ -92,9 +102,11 @@ UINT32 AvlTreeRotateLeft(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
  *
  * @return UINT32
  */
-UINT32 AvlTreeRotateRight(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
-    UINT32 NewRoot = AvlContext->Tree[Index].Left;
-    AvlContext->Tree[Index].Left = AvlContext->Tree[NewRoot].Right;
+UINT32
+AvlTreeRotateRight(OPTIMIZATION_AVL_CONTEXT * AvlContext, UINT32 Index)
+{
+    UINT32 NewRoot                  = AvlContext->Tree[Index].Left;
+    AvlContext->Tree[Index].Left    = AvlContext->Tree[NewRoot].Right;
     AvlContext->Tree[NewRoot].Right = Index;
     AvlTreeUpdateHeight(AvlContext, Index);
     AvlTreeUpdateHeight(AvlContext, NewRoot);
@@ -108,22 +120,43 @@ UINT32 AvlTreeRotateRight(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
  *
  * @return UINT32
  */
-UINT32 AvlTreeBalance(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
-    if (AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Left) > AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Right) + 1) {
-        if (AvlTreeGetHeight(AvlContext, AvlContext->Tree[AvlContext->Tree[Index].Left].Left) >= AvlTreeGetHeight(AvlContext, AvlContext->Tree[AvlContext->Tree[Index].Left].Right)) {
+UINT32
+AvlTreeBalance(OPTIMIZATION_AVL_CONTEXT * AvlContext, UINT32 Index)
+{
+    if (AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Left) >
+        AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Right) + 1)
+    {
+        if (AvlTreeGetHeight(AvlContext,
+                             AvlContext->Tree[AvlContext->Tree[Index].Left].Left) >=
+            AvlTreeGetHeight(
+                AvlContext,
+                AvlContext->Tree[AvlContext->Tree[Index].Left].Right))
+        {
             Index = AvlTreeRotateRight(AvlContext, Index);
         }
-        else {
-            AvlContext->Tree[Index].Left = AvlTreeRotateLeft(AvlContext, AvlContext->Tree[Index].Left);
+        else
+        {
+            AvlContext->Tree[Index].Left =
+                AvlTreeRotateLeft(AvlContext, AvlContext->Tree[Index].Left);
             Index = AvlTreeRotateRight(AvlContext, Index);
         }
     }
-    else if (AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Right) > AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Left) + 1) {
-        if (AvlTreeGetHeight(AvlContext, AvlContext->Tree[AvlContext->Tree[Index].Right].Right) >= AvlTreeGetHeight(AvlContext, AvlContext->Tree[AvlContext->Tree[Index].Right].Left)) {
+    else if (AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Right) >
+             AvlTreeGetHeight(AvlContext, AvlContext->Tree[Index].Left) + 1)
+    {
+        if (AvlTreeGetHeight(
+                AvlContext,
+                AvlContext->Tree[AvlContext->Tree[Index].Right].Right) >=
+            AvlTreeGetHeight(
+                AvlContext,
+                AvlContext->Tree[AvlContext->Tree[Index].Right].Left))
+        {
             Index = AvlTreeRotateLeft(AvlContext, Index);
         }
-        else {
-            AvlContext->Tree[Index].Right = AvlTreeRotateRight(AvlContext, AvlContext->Tree[Index].Right);
+        else
+        {
+            AvlContext->Tree[Index].Right =
+                AvlTreeRotateRight(AvlContext, AvlContext->Tree[Index].Right);
             Index = AvlTreeRotateLeft(AvlContext, Index);
         }
     }
@@ -139,20 +172,29 @@ UINT32 AvlTreeBalance(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
  *
  * @return UINT32
  */
-UINT32 AvlTreeInsertItem(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index, UINT64 Data) {
-    if (Index == MAX_AVL_TEST_NODES) {
-        AvlContext->Tree[AvlContext->FreeIndex].Data = Data;
-        AvlContext->Tree[AvlContext->FreeIndex].Left = MAX_AVL_TEST_NODES;
-        AvlContext->Tree[AvlContext->FreeIndex].Right = MAX_AVL_TEST_NODES;
+UINT32
+AvlTreeInsertItem(OPTIMIZATION_AVL_CONTEXT * AvlContext,
+                  UINT32                     Index,
+                  UINT64                     Data)
+{
+    if (Index == MAX_AVL_TEST_NODES)
+    {
+        AvlContext->Tree[AvlContext->FreeIndex].Data   = Data;
+        AvlContext->Tree[AvlContext->FreeIndex].Left   = MAX_AVL_TEST_NODES;
+        AvlContext->Tree[AvlContext->FreeIndex].Right  = MAX_AVL_TEST_NODES;
         AvlContext->Tree[AvlContext->FreeIndex].Height = 1;
         return AvlContext->FreeIndex++;
     }
 
-    if (Data < AvlContext->Tree[Index].Data) {
-        AvlContext->Tree[Index].Left = AvlTreeInsertItem(AvlContext, AvlContext->Tree[Index].Left, Data);
+    if (Data < AvlContext->Tree[Index].Data)
+    {
+        AvlContext->Tree[Index].Left =
+            AvlTreeInsertItem(AvlContext, AvlContext->Tree[Index].Left, Data);
     }
-    else {
-        AvlContext->Tree[Index].Right = AvlTreeInsertItem(AvlContext, AvlContext->Tree[Index].Right, Data);
+    else
+    {
+        AvlContext->Tree[Index].Right =
+            AvlTreeInsertItem(AvlContext, AvlContext->Tree[Index].Right, Data);
     }
     AvlTreeUpdateHeight(AvlContext, Index);
 
@@ -167,8 +209,12 @@ UINT32 AvlTreeInsertItem(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index, UIN
  *
  * @return UINT32
  */
-UINT32 AvlTreeFindMin(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
-    if (Index == MAX_AVL_TEST_NODES || AvlContext->Tree[Index].Left == MAX_AVL_TEST_NODES) {
+UINT32
+AvlTreeFindMin(OPTIMIZATION_AVL_CONTEXT * AvlContext, UINT32 Index)
+{
+    if (Index == MAX_AVL_TEST_NODES ||
+        AvlContext->Tree[Index].Left == MAX_AVL_TEST_NODES)
+    {
         return Index;
     }
     return AvlTreeFindMin(AvlContext, AvlContext->Tree[Index].Left);
@@ -183,37 +229,58 @@ UINT32 AvlTreeFindMin(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
  *
  * @return UINT32
  */
-UINT32 AvlTreeDeleteItem(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index, UINT64 Data) {
-    if (Index == MAX_AVL_TEST_NODES) {
+UINT32
+AvlTreeDeleteItem(OPTIMIZATION_AVL_CONTEXT * AvlContext,
+                  UINT32                     Index,
+                  UINT64                     Data)
+{
+    if (Index == MAX_AVL_TEST_NODES)
+    {
         return MAX_AVL_TEST_NODES;
     }
 
-    if (Data < AvlContext->Tree[Index].Data) {
-        AvlContext->Tree[Index].Left = AvlTreeDeleteItem(AvlContext, AvlContext->Tree[Index].Left, Data);
+    if (Data < AvlContext->Tree[Index].Data)
+    {
+        AvlContext->Tree[Index].Left =
+            AvlTreeDeleteItem(AvlContext, AvlContext->Tree[Index].Left, Data);
     }
-    else if (Data > AvlContext->Tree[Index].Data) {
-        AvlContext->Tree[Index].Right = AvlTreeDeleteItem(AvlContext, AvlContext->Tree[Index].Right, Data);
+    else if (Data > AvlContext->Tree[Index].Data)
+    {
+        AvlContext->Tree[Index].Right =
+            AvlTreeDeleteItem(AvlContext, AvlContext->Tree[Index].Right, Data);
     }
-    else {
-        if (AvlContext->Tree[Index].Left == MAX_AVL_TEST_NODES || AvlContext->Tree[Index].Right == MAX_AVL_TEST_NODES) {
-            UINT32 temp = (AvlContext->Tree[Index].Left != MAX_AVL_TEST_NODES) ? AvlContext->Tree[Index].Left : AvlContext->Tree[Index].Right;
-            if (temp == MAX_AVL_TEST_NODES) {
-                temp = Index;
+    else
+    {
+        if (AvlContext->Tree[Index].Left == MAX_AVL_TEST_NODES ||
+            AvlContext->Tree[Index].Right == MAX_AVL_TEST_NODES)
+        {
+            UINT32 temp = (AvlContext->Tree[Index].Left != MAX_AVL_TEST_NODES)
+                              ? AvlContext->Tree[Index].Left
+                              : AvlContext->Tree[Index].Right;
+            if (temp == MAX_AVL_TEST_NODES)
+            {
+                temp  = Index;
                 Index = MAX_AVL_TEST_NODES;
             }
-            else {
+            else
+            {
                 AvlContext->Tree[Index] = AvlContext->Tree[temp];
             }
             AvlContext->FreeIndex--;
         }
-        else {
-            UINT32 temp = AvlTreeFindMin(AvlContext, AvlContext->Tree[Index].Right);
-            AvlContext->Tree[Index].Data = AvlContext->Tree[temp].Data;
-            AvlContext->Tree[Index].Right = AvlTreeDeleteItem(AvlContext, AvlContext->Tree[Index].Right, AvlContext->Tree[temp].Data);
+        else
+        {
+            UINT32 temp                   = AvlTreeFindMin(AvlContext, AvlContext->Tree[Index].Right);
+            AvlContext->Tree[Index].Data  = AvlContext->Tree[temp].Data;
+            AvlContext->Tree[Index].Right = AvlTreeDeleteItem(
+                AvlContext,
+                AvlContext->Tree[Index].Right,
+                AvlContext->Tree[temp].Data);
         }
     }
 
-    if (Index == MAX_AVL_TEST_NODES) {
+    if (Index == MAX_AVL_TEST_NODES)
+    {
         return Index;
     }
 
@@ -229,9 +296,11 @@ UINT32 AvlTreeDeleteItem(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index, UIN
  *
  * @return VOID
  */
-VOID AvlTreePrintInOrder(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
-
-    if (Index == MAX_AVL_TEST_NODES) {
+VOID
+AvlTreePrintInOrder(OPTIMIZATION_AVL_CONTEXT * AvlContext, UINT32 Index)
+{
+    if (Index == MAX_AVL_TEST_NODES)
+    {
         return;
     }
     AvlTreePrintInOrder(AvlContext, AvlContext->Tree[Index].Left);
@@ -247,19 +316,24 @@ VOID AvlTreePrintInOrder(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT32 Index) {
  *
  * @return UINT32
  */
-UINT32 AvlTreeFindIndex(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT64 Data) {
-
+UINT32
+AvlTreeFindIndex(OPTIMIZATION_AVL_CONTEXT * AvlContext, UINT64 Data)
+{
     UINT32 Index = AvlContext->Root;
 
-    while (Index != MAX_AVL_TEST_NODES) {
+    while (Index != MAX_AVL_TEST_NODES)
+    {
         printf("%d->", Index);
-        if (Data < AvlContext->Tree[Index].Data) {
+        if (Data < AvlContext->Tree[Index].Data)
+        {
             Index = AvlContext->Tree[Index].Left;
         }
-        else if (Data > AvlContext->Tree[Index].Data) {
+        else if (Data > AvlContext->Tree[Index].Data)
+        {
             Index = AvlContext->Tree[Index].Right;
         }
-        else {
+        else
+        {
             break;
         }
     }
@@ -274,9 +348,10 @@ UINT32 AvlTreeFindIndex(OPTIMIZATION_AVL_CONTEXT* AvlContext, UINT64 Data) {
  *
  * @return UINT32
  */
-int main() {
-
-    OPTIMIZATION_AVL_CONTEXT AvlContext = { 0 };
+int
+main()
+{
+    OPTIMIZATION_AVL_CONTEXT AvlContext = {0};
 
     //
     // Initialize AVL tree
