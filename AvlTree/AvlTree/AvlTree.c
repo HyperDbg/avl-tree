@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <Windows.h>
 
 /**
@@ -26,8 +25,8 @@ typedef struct _OPTIMIZATION_AVL_NODE {
 typedef struct _OPTIMIZATION_AVL_CONTEXT {
 
     OPTIMIZATION_AVL_NODE Tree[MAX_AVL_TEST_NODES];
-    UINT32 Root = MAX_AVL_TEST_NODES; // Use a value that is not a valid index
-    UINT32 FreeIndex = 0;
+    UINT32 Root; // Use a value that is not a valid index
+    UINT32 FreeIndex;
 
 } OPTIMIZATION_AVL_CONTEXT, * POPTIMIZATION_AVL_CONTEXT;
 
